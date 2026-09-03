@@ -71,16 +71,23 @@
         .stat-box .val { font-size: 18px; font-weight: 900; color: #FFF; }
         .stat-box .lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 800; margin-top: 4px; }
 
+        /* PANEL DECISIONES CON IMÁGENES */
         .action-panel { margin-top: 25px; }
         .action-panel h4 { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
         .action-panel p { font-size: 13px; color: var(--text-muted); margin-bottom: 15px; line-height: 1.5; }
         .decisions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .decisions-grid.full { grid-template-columns: 1fr; }
         
-        .dec-btn { background: var(--bg-main); border: 2px solid var(--border-color); border-radius: 12px; padding: 15px; cursor: pointer; text-align: left; transition: all 0.3s ease; display: flex; flex-direction: column; justify-content: space-between; min-height: 90px; }
-        .dec-btn:hover { border-color: #FFF; transform: translateY(-3px); }
-        .dec-title { color: #FFF; font-weight: 800; font-size: 14px; margin-bottom: 8px; line-height: 1.3; }
+        .dec-btn { background: var(--bg-main); border: 2px solid var(--border-color); border-radius: 12px; padding: 12px; cursor: pointer; text-align: left; transition: all 0.3s ease; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        .dec-btn:hover { border-color: #FFF; transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.4); }
+        
+        .dec-img-container { height: 100px; width: 100%; border-radius: 8px; overflow: hidden; margin-bottom: 12px; background: #000; }
+        .dec-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.3s; }
+        .dec-btn:hover .dec-img { opacity: 1; transform: scale(1.05); }
+
+        .dec-title { color: #FFF; font-weight: 800; font-size: 14px; margin-bottom: 6px; line-height: 1.3; }
         .dec-prob { font-size: 12px; font-weight: 600; }
+        
         .dec-btn.processing { border-color: #FFF; animation: pulse-border 1s infinite alternate; pointer-events: none; justify-content: center; align-items: center; }
         .dec-btn.success-anim { border-color: var(--success); background: rgba(16, 185, 129, 0.15); justify-content: center; align-items: center; }
         .dec-btn.fail-anim { border-color: var(--danger); background: rgba(239, 68, 68, 0.15); justify-content: center; align-items: center; }
@@ -95,21 +102,28 @@
         .history-table tr.current { background: rgba(245, 158, 11, 0.1); border-left: 3px solid var(--legacy-gold); }
         .history-table tr.current td { color: var(--legacy-gold); }
 
-        /* CINEMÁTICA Y SUMMARY... */
-        .cinematic-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7, 9, 15, 0.85); backdrop-filter: blur(15px); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.5s ease; }
+        /* CINEMÁTICA DE TROFEOS REALES */
+        .cinematic-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7, 9, 15, 0.90); backdrop-filter: blur(15px); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.5s ease; }
         .cinematic-overlay.show { display: flex; opacity: 1; }
-        .trophies-grid { display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+        .trophies-grid { display: flex; gap: 50px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
         .cinematic-trophy { display: flex; flex-direction: column; align-items: center; animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; opacity: 0; transform: scale(0.5); }
-        .cinematic-icon { font-size: 90px; text-shadow: 0 0 40px rgba(245, 158, 11, 0.8); margin-bottom: 15px; }
-        .cinematic-title { color: #FFF; font-weight: 900; font-size: 22px; text-transform: uppercase; letter-spacing: 1px; text-align: center; }
         
+        .cinematic-img { height: 140px; object-fit: contain; filter: drop-shadow(0 0 25px rgba(245, 158, 11, 0.8)); margin-bottom: 20px; }
+        
+        .cinematic-title { color: #FFF; font-weight: 900; font-size: 24px; text-transform: uppercase; letter-spacing: 1px; text-align: center; }
+        .cinematic-subtitle { color: var(--legacy-gold); font-weight: 700; font-size: 16px; text-transform: uppercase; margin-bottom: 40px; letter-spacing: 4px; }
+        
+        @keyframes popIn { to { opacity: 1; transform: scale(1); } }
+
+        /* SUMMARY FINAL */
         .summary-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 40px; text-align: center; }
         .clubs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 30px; }
         .club-box { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; text-align: center; }
+        .club-box h5 { color: #FFF; font-size: 13px; margin-bottom: 10px; font-weight: 800; }
+        .club-box p { color: var(--text-muted); font-size: 11px; margin-bottom: 2px; }
         .trophy-cabinet { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-top: 30px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
         .t-badge { background: rgba(245, 158, 11, 0.1); color: var(--legacy-gold); border: 1px solid rgba(245, 158, 11, 0.3); padding: 8px 15px; border-radius: 20px; font-size: 12px; font-weight: 800; }
 
-        @keyframes popIn { to { opacity: 1; transform: scale(1); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -149,7 +163,7 @@
                         
                         <div class="input-group row">
                             <div>
-                                <label>Apellido en el Jersey</label>
+                                <label>Nombre en Jersey</label>
                                 <input type="text" id="playerName" value="HEBER">
                             </div>
                             <div style="flex: 0.4;">
@@ -159,18 +173,12 @@
                         </div>
 
                         <div class="input-group">
-                            <label>Nacionalidad y Academia de Origen</label>
+                            <label>Nacionalidad</label>
                             <select id="playerCountry" onchange="updateJerseyColor()">
                                 <option value="MEX">🇲🇽 México</option>
                                 <option value="ARG">🇦🇷 Argentina</option>
                                 <option value="BRA">🇧🇷 Brasil</option>
                                 <option value="ESP">🇪🇸 España</option>
-                            </select>
-                        </div>
-
-                        <div class="input-group" id="academyGroup">
-                            <select id="playerAcademy">
-                                <!-- Se llena vía JS -->
                             </select>
                         </div>
 
@@ -236,7 +244,7 @@
                             <div class="stat-box"><div class="val" id="statTrophies">0</div><div class="lbl">Trofeos</div></div>
                         </div>
 
-                        <!-- PANEL ACCIÓN -->
+                        <!-- PANEL ACCIÓN CON IMÁGENES -->
                         <div class="action-panel" id="action-panel"></div>
                     </div>
                 </div>
@@ -275,26 +283,26 @@
         </div>
     </div>
 
-    <!-- CINEMÁTICA TROFEOS -->
+    <!-- CINEMÁTICA TROFEOS FOTORREALISTAS -->
     <div id="cinematic-overlay" class="cinematic-overlay">
-        <div class="cinematic-title" style="margin-bottom: 10px;">¡Nuevos Logros Desbloqueados!</div>
+        <div class="cinematic-subtitle">NUEVOS LOGROS DESBLOQUEADOS</div>
         <div class="trophies-grid" id="cinematic-trophies-container"></div>
     </div>
 
     <script>
         const kitColors = {
-            'MEX': { main: '#006847', trim: '#FFFFFF', academies: ['Pachuca Sub-17', 'Atlas Sub-17', 'Pumas Fuerzas Básicas'] }, 
-            'ARG': { main: '#43A1D5', trim: '#FFFFFF', academies: ['Boca Juniors (Reserva)', 'River Plate (Reserva)', 'Vélez (Base)'] }, 
-            'BRA': { main: '#FFDC02', trim: '#009B3A', academies: ['Santos FC (Base)', 'Flamengo Sub-20', 'São Paulo (Base)'] }, 
-            'ESP': { main: '#AA151B', trim: '#F1BF00', academies: ['FC Barcelona B', 'Real Madrid Castilla', 'Villarreal B'] }
+            'MEX': { main: '#006847', trim: '#FFFFFF' }, 
+            'ARG': { main: '#43A1D5', trim: '#FFFFFF' }, 
+            'BRA': { main: '#FFDC02', trim: '#009B3A' }, 
+            'ESP': { main: '#AA151B', trim: '#F1BF00' }
         };
 
         const globalClubs = [
-            { name: "CD Tapatío", minOvr: 55 }, { name: "Atlético Morelia", minOvr: 58 },
+            { name: "Pachuca", minOvr: 55 }, { name: "Boca Jrs", minOvr: 60 },
             { name: "Club Necaxa", minOvr: 65 }, { name: "Cruz Azul", minOvr: 72 },
             { name: "Club América", minOvr: 75 }, { name: "Sevilla FC", minOvr: 78 },
             { name: "Borussia Dortmund", minOvr: 82 }, { name: "Liverpool FC", minOvr: 86 },
-            { name: "Real Madrid", minOvr: 88 }, { name: "LA Galaxy", minOvr: 65 } // Para retiro
+            { name: "Real Madrid", minOvr: 88 }, { name: "LA Galaxy", minOvr: 65 }
         ];
 
         function updateJerseyColor() {
@@ -304,12 +312,6 @@
             document.getElementById('svg-trim').setAttribute('fill', colors.trim);
             document.getElementById('mini-svg-body').setAttribute('fill', colors.main);
             document.getElementById('mini-svg-trim').setAttribute('fill', colors.trim);
-
-            let acSelect = document.getElementById('playerAcademy');
-            acSelect.innerHTML = "";
-            colors.academies.forEach(ac => {
-                acSelect.innerHTML += `<option value="${ac}">${ac}</option>`;
-            });
         }
 
         function selectPos(pos, element) {
@@ -329,7 +331,12 @@
             player.country = document.getElementById('playerCountry').value;
             player.pos = document.getElementById('playerPos').value;
             player.mode = document.getElementById('playerMode').value;
-            player.club = document.getElementById('playerAcademy').value;
+            
+            const canterasReales = {
+                'MEX': 'Pachuca Sub-17', 'ARG': 'Boca Juniors (Reserva)', 
+                'BRA': 'Santos FC (Base)', 'ESP': 'FC Barcelona B'
+            };
+            player.club = canterasReales[player.country] || "Agente Libre";
             
             player.ovr = 55; player.age = 16; 
             player.history = []; player.trophyList = [];
@@ -360,13 +367,12 @@
 
         function getTransferOffers() {
             let possible = globalClubs.filter(c => player.ovr >= c.minOvr - 3 && player.ovr <= c.minOvr + 8);
-            if(player.age >= 33) possible = globalClubs.filter(c => c.name === "LA Galaxy" || c.name === "Club Necaxa"); // Ligas de retiro
+            if(player.age >= 33) possible = globalClubs.filter(c => c.name === "LA Galaxy" || c.name === "Club Necaxa"); 
             
-            // Shuffle y tomar 2
             possible.sort(() => 0.5 - Math.random());
             let offers = possible.slice(0, 2);
-            if(offers.length === 0) offers = [{name: "Agente Libre (Buscando Club)", minOvr: 50}];
-            if(offers.length === 1) offers.push(offers[0]); // Fallback
+            if(offers.length === 0) offers = [{name: "Agente Libre"}];
+            if(offers.length === 1) offers.push(offers[0]); 
             return offers;
         }
 
@@ -374,39 +380,50 @@
             const panel = document.getElementById('action-panel');
             if(player.age > 37) { showSummary(); return; }
 
-            // Lógica de Aparición de Mercado vs Evento
             let isTransferWindow = (player.age === 16 || player.age % 2 === 0 || Math.random() < 0.3);
             
             if (isTransferWindow) {
                 let offers = getTransferOffers();
+                // AQUÍ HEBER: Puedes poner imágenes de estadios reales o firmas de contrato
+                let imgA = "assets/decisiones/firma1.jpg";
+                let imgB = "assets/decisiones/firma2.jpg";
+                let imgStay = "assets/decisiones/estadio.jpg";
+
                 panel.innerHTML = `
                     <h4>Mercado de Fichajes</h4>
-                    <p>Tu rendimiento ha llamado la atención. ¿Qué harás esta temporada?</p>
+                    <p>Han llegado ofertas por ti. ¿Qué harás esta temporada?</p>
                     <div class="decisions-grid full">
                         <div style="display:flex; gap:15px;">
                             <button class="dec-btn" style="flex:1" onclick="processTransfer(this, '${offers[0].name}')">
+                                <div class="dec-img-container"><img src="${imgA}" class="dec-img" onerror="this.src='https://images.unsplash.com/photo-1551280857-2b9bbe5260fc?w=400';"></div>
                                 <div class="dec-title">Firmar con ${offers[0].name}</div>
                                 <div class="dec-prob"><span style="color:var(--success)">Nuevo Reto</span></div>
                             </button>
                             <button class="dec-btn" style="flex:1" onclick="processTransfer(this, '${offers[1].name}')">
+                                <div class="dec-img-container"><img src="${imgB}" class="dec-img" onerror="this.src='https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=400';"></div>
                                 <div class="dec-title">Firmar con ${offers[1].name}</div>
                                 <div class="dec-prob"><span style="color:var(--success)">Nuevo Reto</span></div>
                             </button>
                         </div>
                         <button class="dec-btn" onclick="processTransfer(this, '${player.club}')" style="min-height:auto;">
                             <div class="dec-title">Quedarse en ${player.club}</div>
-                            <div class="dec-prob"><span style="color:#FFF">Lealtad</span></div>
+                            <div class="dec-prob"><span style="color:#FFF">Lealtad al Club actual</span></div>
                         </button>
                     </div>
                 `;
             } else {
-                let title = "Entrenamiento Táctico";
-                let desc = "El equipo necesita que adaptes tu rol defensivo/ofensivo para el próximo torneo.";
+                let title = "Entrenamiento de Alto Rendimiento";
+                let desc = "El equipo necesita que mejores tu condición para la recta final.";
                 let riskSuccess = 0.6; let riskReward = 3; let riskPen = -2;
+                
+                // AQUÍ HEBER: Rutas de tus imágenes para los eventos
+                let imgRisk = "assets/decisiones/entrenamiento_duro.jpg";
+                let imgSafe = "assets/decisiones/descanso.jpg";
 
                 if (player.mode === 'intense' && Math.random() < 0.5) {
-                    title = "Lesión en Práctica"; desc = "Sentiste un tirón muscular fuerte. ¿Fuerzas la recuperación o descansas?";
-                    riskSuccess = 0.4; riskReward = 1; riskPen = -4;
+                    title = "Polémica en Prensa"; desc = "¿Declaras contra el DT o mantienes el silencio?";
+                    riskSuccess = 0.4; riskReward = 2; riskPen = -4;
+                    imgRisk = "assets/decisiones/prensa.jpg"; imgSafe = "assets/decisiones/entrenamiento_duro.jpg";
                 }
 
                 panel.innerHTML = `
@@ -414,11 +431,13 @@
                     <p>${desc}</p>
                     <div class="decisions-grid">
                         <button class="dec-btn" onclick="processDecision(this, true, ${riskReward}, ${riskPen}, ${riskSuccess})">
-                            <div class="dec-title">Arriesgar el Físico</div>
-                            <div class="dec-prob"><span style="color:var(--success)">+${riskReward} OVR (${riskSuccess*100}%)</span><br><span style="color:var(--danger)">${riskPen} OVR (${100 - riskSuccess*100}%)</span></div>
+                            <div class="dec-img-container"><img src="${imgRisk}" class="dec-img" onerror="this.src='https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400';"></div>
+                            <div class="dec-title">Tomar la opción de Riesgo</div>
+                            <div class="dec-prob"><span style="color:var(--success)">+${riskReward} OVR (${riskSuccess*100}%)</span> | <span style="color:var(--danger)">${riskPen} OVR (${100 - riskSuccess*100}%)</span></div>
                         </button>
                         <button class="dec-btn" onclick="processDecision(this, false, 1, 0, 1)">
-                            <div class="dec-title">Tomarlo Seguro</div>
+                            <div class="dec-img-container"><img src="${imgSafe}" class="dec-img" onerror="this.src='https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400';"></div>
+                            <div class="dec-title">Opción Segura</div>
                             <div class="dec-prob"><span style="color:#FFF">+1 OVR Garantizado</span></div>
                         </button>
                     </div>
@@ -429,13 +448,13 @@
         function processTransfer(btn, newClub) {
             document.querySelectorAll('.dec-btn').forEach(b => b.style.pointerEvents = 'none');
             btn.classList.add('processing');
-            btn.innerHTML = `<div style="color:#FFF; font-weight:900; font-size:14px; text-align:center; width:100%;">FIRMANDO CONTRATO...</div>`;
+            btn.innerHTML = `SIMULANDO CONTRATO...`;
 
             setTimeout(() => {
                 player.club = newClub;
                 btn.classList.remove('processing');
                 btn.classList.add('success-anim');
-                btn.innerHTML = `<div style="color:#FFF; font-weight:900; font-size:14px; text-align:center; width:100%;">¡TRASPASO COMPLETADO!</div>`;
+                btn.innerHTML = `¡TRASPASO COMPLETADO!`;
                 
                 setTimeout(() => { ejecutarSimulacionAnual(0); }, 1500);
             }, 2000);
@@ -444,7 +463,7 @@
         function processDecision(btn, isRisk, reward, penalty, successRate) {
             document.querySelectorAll('.dec-btn').forEach(b => b.style.pointerEvents = 'none');
             btn.classList.add('processing');
-            btn.innerHTML = `<div style="color:#FFF; font-weight:900; font-size:14px; text-align:center; width:100%;">SIMULANDO...</div>`;
+            btn.innerHTML = `SIMULANDO TEMPORADA...`;
 
             setTimeout(() => {
                 btn.classList.remove('processing');
@@ -454,21 +473,21 @@
                 if(isRisk) {
                     if(isSuccess) {
                         btn.classList.add('success-anim');
-                        btn.innerHTML = `<div style="color:var(--success); font-weight:900; font-size:16px; text-align:center; width:100%;">¡ÉXITO! +${reward} OVR</div>`;
+                        btn.innerHTML = `¡ÉXITO! +${reward} OVR`;
                         ovrChange = reward;
                     } else {
                         btn.classList.add('fail-anim');
-                        btn.innerHTML = `<div style="color:var(--danger); font-weight:900; font-size:16px; text-align:center; width:100%;">¡MALA SUERTE! ${penalty} OVR</div>`;
+                        btn.innerHTML = `¡MALA SUERTE! ${penalty} OVR`;
                         ovrChange = penalty;
                     }
                 } else {
                     btn.classList.add('success-anim');
-                    btn.innerHTML = `<div style="color:#FFF; font-weight:900; font-size:14px; text-align:center; width:100%;">TEMPORada LISTA</div>`;
+                    btn.innerHTML = `TEMPORADA COMPLETADA`;
                     ovrChange = reward;
                 }
 
                 setTimeout(() => { ejecutarSimulacionAnual(ovrChange); }, 1500);
-            }, 2000); 
+            }, 2500); 
         }
 
         function ejecutarSimulacionAnual(impactoOVR) {
@@ -527,14 +546,11 @@
 
         function checkTrophies(primaryStat) {
             let won = [];
-            if (player.ovr >= 85 && Math.random() > 0.85) { won.push({name: "Liga Nacional", icon: "🛡️"}); }
-            if (player.club === "Real Madrid" || player.club === "Liverpool FC") {
-                if(Math.random() > 0.7) won.push({name: "Champions League", icon: "🏆"}); 
-            }
-            if (player.ovr >= 92 && Math.random() > 0.85) { won.push({name: "Balón de Oro", icon: "🥇"}); }
-            
-            if ((player.pos === 'ST' || player.pos === 'CAM') && primaryStat > 28) { won.push({name: "Bota de Oro", icon: "👟"}); }
-            if ((player.pos === 'CB' || player.pos === 'GK' || player.pos === 'LB' || player.pos === 'RB') && primaryStat > 15 && Math.random() > 0.6) { won.push({name: "Muro del Año", icon: "🧱"}); }
+            // AQUÍ HEBER: Nombres de imágenes reales que pondrás en assets/trofeos/
+            if (player.ovr >= 85 && Math.random() > 0.85) { won.push({name: "Liga Nacional", img: "assets/trofeos/liga.png"}); }
+            if ((player.club === "Real Madrid" || player.club === "Liverpool FC") && Math.random() > 0.7) { won.push({name: "Champions League", img: "assets/trofeos/champions.png"}); }
+            if (player.ovr >= 92 && Math.random() > 0.85) { won.push({name: "Balón de Oro", img: "assets/trofeos/balon_oro.png"}); }
+            if ((player.pos === 'ST' || player.pos === 'CAM') && primaryStat > 28) { won.push({name: "Bota de Oro", img: "assets/trofeos/bota_oro.png"}); }
 
             if(won.length > 0) {
                 player.trophies += won.length;
@@ -550,9 +566,10 @@
 
             trophiesArr.forEach((t, index) => {
                 let delay = index * 0.2;
+                // Si la imagen no existe aún, carga un PNG de trofeo genérico dorado para que no se vea roto
                 container.innerHTML += `
                     <div class="cinematic-trophy" style="animation-delay: ${delay}s">
-                        <div class="cinematic-icon">${t.icon}</div>
+                        <img src="${t.img}" class="cinematic-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3112/3112946.png';">
                         <div class="cinematic-title">${t.name}</div>
                     </div>
                 `;
@@ -562,7 +579,7 @@
             setTimeout(() => {
                 overlay.classList.remove('show');
                 setTimeout(() => { renderDecisionPanel(); }, 500);
-            }, 3500); 
+            }, 4000); // 4 Segundos en pantalla
         }
 
         function updateUI() {
@@ -611,19 +628,11 @@
             if (player.trophyList.length === 0) {
                 trophiesHtml = `<span style="color:var(--text-muted); font-size:14px;">Carrera sin títulos internacionales.</span>`;
             } else {
-                player.trophyList.forEach(t => {
-                    let icon = "🏆";
-                    if(t === "Balón de Oro") icon = "🥇";
-                    if(t === "Bota de Oro") icon = "👟";
-                    if(t === "Muro del Año") icon = "🧱";
-                    if(t === "Liga Nacional") icon = "🛡️";
-                    trophiesHtml += `<div class="t-badge">${icon} ${t}</div>`;
-                });
+                player.trophyList.forEach(t => { trophiesHtml += `<div class="t-badge">🏆 ${t}</div>`; });
             }
             document.getElementById('trophyCabinet').innerHTML = trophiesHtml;
         }
 
-        // Init Setup
         updateJerseyColor();
     </script>
 </body>
