@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legacy | Construye tu historia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ================= PALETA Y DISEÑO BASE ================= */
+        :root {
+            --bg-main: #07090F;
+            --bg-card: #131A2B;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --border-color: #1E293B;
+            --legacy-gold: #F59E0B;
+            --legacy-accent: #3B82F6;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* ================= LIVE TICKER (API PLACEHOLDER) ================= */
+        .live-ticker { background: #000; border-bottom: 1px solid var(--border-color); padding: 8px 20px; display: flex; gap: 30px; overflow-x: auto; white-space: nowrap; font-size: 12px; color: var(--text-muted); font-weight: 600; }
+        .live-match b { color: #FFF; }
+        .live-match span { color: var(--legacy-gold); margin-left: 5px; }
+
+        /* ================= HEADER ================= */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); }
+        .logo { font-weight: 900; font-size: 24px; letter-spacing: -1.5px; color: #FFF; }
+        .logo span { color: var(--legacy-gold); }
+        .nav-links { display: flex; gap: 25px; font-size: 14px; font-weight: 700; color: var(--text-muted); }
+        .nav-links span { cursor: pointer; transition: 0.2s; }
+        .nav-links span:hover { color: #FFF; }
+
+        /* ================= ESTRUCTURA CENTRAL ================= */
+        .main-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 40px 20px; }
+        .screen { display: none; width: 100%; max-width: 1050px; animation: fadeIn 0.4s ease-out; }
+        .screen.active { display: block; }
+
+        /* ================= SETUP (CREAR IDENTIDAD) ================= */
+        .setup-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 40px; text-align: center; }
+        
+        /* Jersey Dinámico SVG */
+        .jersey-container { width: 120px; height: 120px; margin: 0 auto 20px auto; }
+        .jersey-svg { width: 100%; height: 100%; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5)); transition: 0.3s; }
+        
+        .setup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px; text-align: left; }
+        .input-group { display: flex; flex-direction: column; margin-bottom: 20px; }
+        label { font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+        input, select { background: var(--bg-main); border: 1px solid var(--border-color); color: #FFF; padding: 14px; border-radius: 8px; font-size: 16px; outline: none; font-weight: 600; transition: 0.3s; }
+        input:focus, select:focus { border-color: var(--legacy-gold); }
+
+        .btn-main { background: #FFF; color: #000; border: none; padding: 15px 30px; font-weight: 900; font-size: 16px; border-radius: 8px; cursor: pointer; transition: 0.2s; width: 100%; margin-top: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-main:hover { background: var(--legacy-gold); color: #000; transform: translateY(-2px); }
+
+        /* ================= TABLERO DE JUEGO ================= */
+        .game-layout { display: grid; grid-template-columns: 380px 1fr; gap: 30px; align-items: start; }
+        
+        /* TARJETA JUGADOR */
+        .player-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; position: relative; }
+        .ovr-badge { position: absolute; top: 25px; right: 25px; background: linear-gradient(135deg, #F59E0B, #D97706); color: #000; font-weight: 900; font-size: 26px; padding: 10px 15px; border-radius: 12px; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4); }
+        .player-info { margin-bottom: 25px; display: flex; align-items: center; gap: 15px; }
+        .player-info-jersey { width: 60px; height: 60px; }
+        
+        .player-name { font-size: 24px; font-weight: 900; color: #FFF; line-height: 1.1; }
+        .player-nat { font-size: 13px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-top: 4px; }
+        .player-club { font-size: 14px; font-weight: 800; color: var(--legacy-gold); margin-top: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        
+        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: var(--bg-main); padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 15px; }
+        .stat-box .val { font-size: 18px; font-weight: 900; color: #FFF; }
+        .stat-box .lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 800; margin-top: 4px; }
+
+        /* DERECHA: HISTORIAL */
+        .history-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; max-height: 650px; overflow-y: auto; }
+        .history-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .history-table th { color: var(--text-muted); text-align: left; padding: 12px; border-bottom: 1px solid var(--border-color); font-weight: 800; font-size: 11px; text-transform: uppercase; }
+        .history-table td { padding: 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.02); font-weight: 600; }
+        .history-table tr.current { background: rgba(245, 158, 11, 0.05); border-left: 3px solid var(--legacy-gold); }
+
+        /* ================= MODAL DECISIONES ================= */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7, 9, 15, 0.95); z-index: 100; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
+        .modal-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 40px; max-width: 600px; width: 100%; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+        .modal-box h3 { font-size: 26px; font-weight: 900; margin-bottom: 10px; }
+        .modal-box p { color: var(--text-muted); font-size: 15px; margin-bottom: 30px; line-height: 1.6; }
+        
+        .decisions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .dec-btn { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; cursor: pointer; text-align: left; transition: 0.2s; display: flex; flex-direction: column; }
+        .dec-btn:hover { border-color: var(--legacy-gold); transform: translateY(-3px); }
+        .dec-btn .dec-title { color: #FFF; font-weight: 800; font-size: 16px; margin-bottom: 8px; }
+        .dec-btn .dec-prob { font-size: 13px; font-weight: 600; }
+
+        /* ================= FOOTER ================= */
+        footer { background-color: var(--bg-card); border-top: 1px solid var(--border-color); padding: 50px 60px; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-top: auto; }
+        .ft-brand { font-weight: 900; font-size: 24px; color: #FFF; margin-bottom: 15px; }
+        .ft-btn { background: transparent; border: 1px solid var(--border-color); color: #FFF; padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.2s; margin-right: 10px; }
+        .ft-btn:hover { background: #FFF; color: #000; }
+        .ft-col h4 { color: #FFF; font-size: 13px; font-weight: 800; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        .ft-col p { color: var(--text-muted); font-size: 14px; margin-bottom: 10px; font-weight: 500; cursor: pointer; transition: 0.2s; }
+        .ft-col p:hover { color: var(--legacy-gold); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <!-- TICKER (Partidos Simulados) -->
+    <div class="live-ticker">
+        <div class="live-match">⚽ <b>ARS</b> 2 - 1 <b>MCI</b> <span>88'</span></div>
+        <div class="live-match">⚽ <b>RMA</b> 0 - 0 <b>BAR</b> <span>HT</span></div>
+        <div class="live-match">⚽ <b>AMX</b> 3 - 1 <b>TIG</b> <span>FT</span></div>
+        <div class="live-match">⚾ <b>NYY</b> 5 - 2 <b>BOS</b> <span>Alta 7°</span></div>
+        <div class="live-match">🏀 <b>LAL</b> 112 - 108 <b>GSW</b> <span>4Q</span></div>
+    </div>
+
+    <!-- HEADER -->
+    <header>
+        <div class="logo">legacy<span>.</span></div>
+        <div class="nav-links">
+            <span style="color: #FFF;">Fútbol</span>
+            <span>Béisbol (MLB)</span>
+            <span>Básquetbol (NBA)</span>
+        </div>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="main-container">
+
+        <!-- PANTALLA 1: SETUP -->
+        <div id="screen-setup" class="screen active">
+            <div class="setup-card">
+                
+                <!-- SVG JERSEY DINÁMICO -->
+                <div class="jersey-container">
+                    <svg class="jersey-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Cuerpo de la playera -->
+                        <path id="svg-body" fill="#006847" d="M374.3,69.5L256,18.7L137.7,69.5L34.2,187.3l57.7,50.7l23.5-38.5v293.8h281.3V199.5l23.5,38.5l57.7-50.7 L374.3,69.5z"/>
+                        <!-- Cuello y puños -->
+                        <path id="svg-trim" fill="#CE1126" d="M256,92c-28.5,0-52.6-20.3-57.9-47.5L256,18.7l57.9,25.7C308.6,71.7,284.5,92,256,92z M115.4,199.5l-33,54 l-12.7-11.2l39-65.4L115.4,199.5z M396.6,199.5l6.7-22.6l39,65.4l-12.7,11.2L396.6,199.5z"/>
+                    </svg>
+                </div>
+
+                <h1 style="font-size: 32px; font-weight: 900; margin-bottom: 5px;">Define tu Identidad</h1>
+                <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 30px;">Tu origen dictará tus primeros pasos en el profesionalismo.</p>
+                
+                <div class="setup-grid">
+                    <div>
+                        <div class="input-group">
+                            <label>Apellido / Apodo en el Jersey</label>
+                            <input type="text" id="playerName" value="HEBER">
+                        </div>
+                        <div class="input-group">
+                            <label>Nacionalidad</label>
+                            <select id="playerCountry" onchange="updateJerseyColor(this.value)">
+                                <option value="MEX">🇲🇽 México</option>
+                                <option value="ARG">🇦🇷 Argentina</option>
+                                <option value="BRA">🇧🇷 Brasil</option>
+                                <option value="ESP">🇪🇸 España</option>
+                                <option value="COL">🇨🇴 Colombia</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="input-group">
+                            <label>Posición Táctica</label>
+                            <select id="playerPos">
+                                <option value="CB">Defensa Central (CB)</option>
+                                <option value="ST">Delantero (ST / 9)</option>
+                                <option value="CAM">Mediocampista (CAM)</option>
+                                <option value="GK">Portero (GK)</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Estilo de Juego</label>
+                            <select id="playerStyle">
+                                <option value="pro">Pro (Equilibrado)</option>
+                                <option value="risk">Arriesgado (Más eventos, más lesiones)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-main" onclick="startCareer()">Comenzar Leyenda</button>
+            </div>
+        </div>
+
+        <!-- PANTALLA 2: JUEGO -->
+        <div id="screen-game" class="screen">
+            <div class="game-layout">
+                
+                <!-- IZQUIERDA: UI JUGADOR -->
+                <div>
+                    <div class="player-card">
+                        <div class="ovr-badge" id="statOvr">55</div>
+                        
+                        <div class="player-info">
+                            <div class="player-info-jersey">
+                                <!-- Mini Jersey Clonado -->
+                                <svg class="jersey-svg" id="mini-jersey" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                                    <path id="mini-svg-body" fill="#006847" d="M374.3,69.5L256,18.7L137.7,69.5L34.2,187.3l57.7,50.7l23.5-38.5v293.8h281.3V199.5l23.5,38.5l57.7-50.7 L374.3,69.5z"/>
+                                    <path id="mini-svg-trim" fill="#CE1126" d="M256,92c-28.5,0-52.6-20.3-57.9-47.5L256,18.7l57.9,25.7C308.6,71.7,284.5,92,256,92z M115.4,199.5l-33,54 l-12.7-11.2l39-65.4L115.4,199.5z M396.6,199.5l6.7-22.6l39,65.4l-12.7,11.2L396.6,199.5z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="player-name" id="infoName">HEBER</div>
+                                <div class="player-nat" id="infoNat">MEX • CB</div>
+                            </div>
+                        </div>
+
+                        <div class="player-club" id="infoClub">📍 Dragones (Cantera)</div>
+
+                        <div class="stats-row" style="margin-top: 20px;">
+                            <div class="stat-box"><div class="val" id="statAge">16</div><div class="lbl">Edad</div></div>
+                            <div class="stat-box"><div class="val" id="statValue">€150K</div><div class="lbl">Valor</div></div>
+                            <div class="stat-box"><div class="val" id="statApps">0</div><div class="lbl">Partidos</div></div>
+                        </div>
+
+                        <div class="stats-row">
+                            <div class="stat-box"><div class="val" id="statGoals">0</div><div class="lbl" id="lblGoles">Goles</div></div>
+                            <div class="stat-box"><div class="val" id="statAst">0</div><div class="lbl" id="lblAst">Asistencias</div></div>
+                            <div class="stat-box"><div class="val" id="statTrophies">0</div><div class="lbl">Trofeos</div></div>
+                        </div>
+
+                        <button class="btn-main" onclick="advanceYear()" style="margin-top: 5px;">Avanzar Temporada ⚡</button>
+                    </div>
+                </div>
+
+                <!-- DERECHA: HISTORIAL -->
+                <div class="history-card">
+                    <h3 style="font-size: 18px; margin-bottom: 20px; font-weight: 900;">Historial Profesional</h3>
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Edad</th>
+                                <th>Club</th>
+                                <th>OVR</th>
+                                <th>PJ</th>
+                                <th id="thGoles">G</th>
+                                <th id="thAst">A</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyBody">
+                            <!-- JS inyecta filas aquí -->
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL DE DECISIONES DE RIESGO -->
+    <div id="decision-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 id="mod-title">Pretemporada de Alto Rendimiento</h3>
+            <p id="mod-desc">Un preparador personal te ofrece trabajar el doble turno para ganar musculatura. Podrías ganar titularidad indiscutible, o sufrir una sobrecarga que te deje fuera meses.</p>
+            
+            <div class="decisions-grid">
+                <!-- OPCION RIESGO -->
+                <button class="dec-btn" onclick="resolverDecision(true)">
+                    <div class="dec-title">Aceptar el reto (Riesgo)</div>
+                    <div class="dec-prob">
+                        <span style="color: var(--accent-green);">Éxito: +3 OVR (60%)</span><br>
+                        <span style="color: #EF4444; margin-top: 5px; display:inline-block;">Lesión: -2 OVR (40%)</span>
+                    </div>
+                </button>
+                
+                <!-- OPCION SEGURO -->
+                <button class="dec-btn" onclick="resolverDecision(false)">
+                    <div class="dec-title">Plan Tradicional (Seguro)</div>
+                    <div class="dec-prob" style="color: var(--text-muted); font-weight: 500;">
+                        Mantienes tu desarrollo normal.<br><span style="color: transparent;">-</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="ft-col">
+            <div class="ft-brand">legacy.</div>
+            <p style="color: var(--text-muted); margin-bottom: 20px; max-width: 250px;">El primer simulador RPG de carrera deportiva. Toma decisiones, asume consecuencias.</p>
+            <button class="ft-btn">X / Twitter</button>
+            <button class="ft-btn">Instagram</button>
+        </div>
+        <div class="ft-col">
+            <h4>Deportes</h4>
+            <p>Fútbol</p>
+            <p>Béisbol (MLB)</p>
+            <p>Básquetbol (NBA)</p>
+            <p>Fútbol Americano</p>
+        </div>
+        <div class="ft-col">
+            <h4>Plataforma</h4>
+            <p>Salón de la Fama</p>
+            <p>Crear Cuenta</p>
+            <p>Soporte</p>
+        </div>
+        <div class="ft-col">
+            <h4>Legal</h4>
+            <p>Términos de Uso</p>
+            <p>Privacidad</p>
+            <p>Cookies</p>
+        </div>
+    </footer>
+
+    <script>
+        // ================= CONFIGURACIÓN DE COLORES SVG =================
+        const kitColors = {
+            'MEX': { main: '#006847', trim: '#CE1126' }, // Verde, detalles Rojos
+            'ARG': { main: '#43A1D5', trim: '#FFFFFF' }, // Celeste, detalles Blancos
+            'BRA': { main: '#FFDC02', trim: '#009B3A' }, // Amarillo, detalles Verdes
+            'ESP': { main: '#AA151B', trim: '#F1BF00' }, // Rojo, detalles Oro
+            'COL': { main: '#FCD116', trim: '#003893' }  // Amarillo, detalles Azul
+        };
+
+        function updateJerseyColor(countryCode) {
+            const colors = kitColors[countryCode];
+            // Actualizar playera grande
+            document.getElementById('svg-body').setAttribute('fill', colors.main);
+            document.getElementById('svg-trim').setAttribute('fill', colors.trim);
+            // Actualizar playera pequeña
+            document.getElementById('mini-svg-body').setAttribute('fill', colors.main);
+            document.getElementById('mini-svg-trim').setAttribute('fill', colors.trim);
+        }
+
+        // ================= ESTADO DEL JUGADOR =================
+        let player = {
+            name: "", country: "", pos: "", age: 16, ovr: 50, value: 100000,
+            apps: 0, goals: 0, ast: 0, trophies: 0, club: "", history: []
+        };
+
+        function startCareer() {
+            player.name = document.getElementById('playerName').value.toUpperCase() || "JUGADOR";
+            player.country = document.getElementById('playerCountry').value;
+            player.pos = document.getElementById('playerPos').value;
+            
+            // Asignar Club Inicial basado en Posición / Nacionalidad (Easter Egg: Defensa = Dragones)
+            if(player.pos === 'CB' && player.country === 'MEX') {
+                player.club = "Dragones (Fuerzas Básicas)";
+            } else {
+                player.club = "Cantera Local";
+            }
+            
+            // Base OVR
+            player.ovr = 55;
+            player.age = 16;
+            player.history = [];
+
+            // Adaptar Textos si es Defensa
+            if(player.pos === 'CB' || player.pos === 'GK') {
+                document.getElementById('lblGoles').innerText = "Vallas Invictas";
+                document.getElementById('lblAst').innerText = "Entradas / Atajadas";
+                document.getElementById('thGoles').innerText = "VI";
+                document.getElementById('thAst').innerText = "DEF";
+            }
+
+            document.getElementById('screen-setup').classList.remove('active');
+            document.getElementById('screen-game').classList.add('active');
+            
+            updateUI();
+        }
+
+        // ================= LÓGICA DE SIMULACIÓN =================
+        function advanceYear() {
+            if(player.age >= 38) {
+                alert("¡Te has retirado! Tu carrera ha llegado a su fin. En la siguiente actualización programaremos la pantalla de Legado Total.");
+                return;
+            }
+
+            // 30% de probabilidad de Evento de Riesgo
+            if (Math.random() < 0.30) {
+                document.getElementById('decision-modal').style.display = 'flex';
+                return; // Pausa el avance
+            }
+
+            ejecutarSimulacionAnual(0);
+        }
+
+        function resolverDecision(arriesga) {
+            document.getElementById('decision-modal').style.display = 'none';
+            let alteracionOVR = 0;
+
+            if (arriesga) {
+                if (Math.random() < 0.60) {
+                    alteracionOVR = 3;
+                    alert("¡Éxito! Tomas el riesgo y logras destacar. OVR +3");
+                } else {
+                    alteracionOVR = -2;
+                    alert("¡Mala suerte! La decisión te pasó factura física o mental. OVR -2");
+                }
+            }
+            ejecutarSimulacionAnual(alteracionOVR);
+        }
+
+        function ejecutarSimulacionAnual(impactoOVR) {
+            player.ovr += impactoOVR;
+
+            // Curva de Envejecimiento (Campana de Gauss simplificada)
+            let growth = 0;
+            if (player.age >= 16 && player.age <= 21) growth = Math.floor(Math.random() * 4) + 2; // Sube mucho
+            else if (player.age >= 22 && player.age <= 28) growth = Math.floor(Math.random() * 2); // Prime (se mantiene o sube poco)
+            else if (player.age >= 29 && player.age <= 32) growth = Math.floor(Math.random() * 3) - 1; // Inicio de declive
+            else if (player.age >= 33) growth = -(Math.floor(Math.random() * 3) + 2); // Caída
+
+            player.ovr += growth;
+            if (player.ovr > 99) player.ovr = 99;
+            if (player.ovr < 40) player.ovr = 40;
+
+            // Simular Stats por Temporada basados en OVR (Form Factor)
+            let formFactor = player.ovr / 100;
+            
+            // Partidos Jugados
+            let seasonalApps = Math.floor(40 * formFactor * (Math.random() * 0.4 + 0.6)); 
+            
+            // Stats Específicas
+            let seasonalPrimary = 0;
+            let seasonalSecondary = 0;
+            
+            if (player.pos === 'ST' || player.pos === 'CAM') {
+                seasonalPrimary = Math.floor(35 * formFactor * (Math.random() * 0.6 + 0.4)); // Goles
+                seasonalSecondary = Math.floor(seasonalPrimary * 0.4); // Asistencias
+            } else {
+                seasonalPrimary = Math.floor(15 * formFactor); // Vallas Invictas
+                seasonalSecondary = Math.floor(50 * formFactor); // Entradas
+            }
+
+            // Calcular Valor
+            if (player.age < 30) player.value += (player.ovr * 150000);
+            else player.value -= (player.value * 0.15); // Pierde valor después de los 30
+
+            // Eventos de Clubes (Simulados)
+            if (player.age === 19 && player.ovr >= 65) player.club = "Club Top Local (Liga MX)";
+            if (player.age === 22 && player.ovr >= 75) player.club = "Club Media Tabla Europa";
+            if (player.age === 26 && player.ovr >= 85) { player.club = "Élite (Champions)"; player.trophies++; }
+
+            player.apps += seasonalApps;
+            player.goals += seasonalPrimary;
+            player.ast += seasonalSecondary;
+
+            player.history.push({
+                age: player.age,
+                club: player.club,
+                ovr: player.ovr,
+                apps: seasonalApps,
+                pStat: seasonalPrimary,
+                sStat: seasonalSecondary
+            });
+
+            player.age++;
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById('infoName').innerText = player.name;
+            document.getElementById('infoNat').innerText = `${player.country} • ${player.pos}`;
+            document.getElementById('infoClub').innerText = `📍 ${player.club}`;
+            document.getElementById('statOvr').innerText = player.ovr;
+            document.getElementById('statAge').innerText = player.age;
+            
+            document.getElementById('statValue').innerText = formatMoney(player.value);
+            document.getElementById('statApps').innerText = player.apps;
+            document.getElementById('statGoals').innerText = player.goals;
+            document.getElementById('statAst').innerText = player.ast;
+            document.getElementById('statTrophies').innerText = player.trophies;
+
+            // Renderizar Historial
+            let tbody = document.getElementById('historyBody');
+            tbody.innerHTML = '';
+            
+            player.history.forEach(season => {
+                let tr = document.createElement('tr');
+                tr.innerHTML = `<td><b>${season.age}</b></td><td>${season.club}</td><td><span style="color:var(--legacy-gold); font-weight:800;">${season.ovr}</span></td><td>${season.apps}</td><td>${season.pStat}</td><td>${season.sStat}</td>`;
+                tbody.appendChild(tr);
+            });
+
+            // Fila actual predictiva
+            if(player.age < 38) {
+                let currTr = document.createElement('tr');
+                currTr.classList.add('current');
+                currTr.innerHTML = `<td><b>${player.age}</b></td><td>${player.club}</td><td>-</td><td>-</td><td>-</td><td>-</td>`;
+                tbody.appendChild(tr = currTr);
+            }
+            
+            // Auto-scroll al final del historial
+            const historyCard = document.querySelector('.history-card');
+            historyCard.scrollTop = historyCard.scrollHeight;
+        }
+
+        function formatMoney(num) {
+            if(num >= 1000000) return "€" + (num / 1000000).toFixed(1) + "M";
+            return "€" + (num / 1000).toFixed(0) + "K";
+        }
+        
+        // Iniciar con color por defecto
+        updateJerseyColor('MEX');
+    </script>
+</body>
+</html>
